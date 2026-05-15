@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pasaporte Turístico</title>
+  <meta name="theme-color" content="#1a1209" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Pasaporte" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ── SCREEN 1: REGISTRO ── -->
+<div id="screen-register" class="screen active">
+  <div class="register-bg">
+    <div class="ornament top-ornament">✦ ✦ ✦</div>
+    <div class="register-card">
+      <div class="passport-emblem">🌍</div>
+      <h1 class="register-title">Pasaporte<br/><span class="italic">Turístico</span></h1>
+      <p class="register-sub">Registra tu viaje · Colecciona recuerdos</p>
+      <div class="form-group">
+        <label>Tu nombre completo</label>
+        <input type="text" id="input-name" placeholder="Ej. María González" maxlength="40" />
+      </div>
+      <div class="form-group">
+        <label>Elige tu avatar</label>
+        <div class="avatar-grid" id="avatar-grid">
+          <button class="av selected" data-av="🧭">🧭</button>
+          <button class="av" data-av="🎒">🎒</button>
+          <button class="av" data-av="🗺️">🗺️</button>
+          <button class="av" data-av="⛺">⛺</button>
+          <button class="av" data-av="🏔️">🏔️</button>
+          <button class="av" data-av="🚂">🚂</button>
+          <button class="av" data-av="✈️">✈️</button>
+          <button class="av" data-av="🌊">🌊</button>
+        </div>
+      </div>
+      <button id="btn-register" class="btn-primary">Obtener mi Pasaporte</button>
+    </div>
+    <div class="ornament bottom-ornament">— — —</div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: PASAPORTE ── -->
+<div id="screen-passport" class="screen">
+  <div class="passport-wrapper">
+
+    <div class="top-bar">
+      <button id="btn-scan" class="scan-btn">
+        <span class="scan-icon">⬡</span>
+        Escanear QR
+      </button>
+      <button id="btn-logout" class="logout-btn" title="Cerrar sesión">✕</button>
+    </div>
+
+    <!-- Cubierta del pasaporte -->
+    <div class="passport-book" id="passport-book">
+      <div class="passport-cover" id="passport-cover">
+        <div class="cover-inner">
+          <div class="cover-ornament-top">❧ ❧ ❧</div>
+          <div class="cover-country">PASAPORTE TURÍSTICO</div>
+          <div class="cover-globe">🌍</div>
+          <div class="cover-lines">
+            <div class="cover-line-thick"></div>
+            <div class="cover-line-thin"></div>
+          </div>
+          <p class="cover-sub">Departamento de Viajes y Exploración</p>
+          <div class="cover-ornament-bottom">· · · · · · · · · ·</div>
+          <p class="cover-tap">toca para abrir</p>
+        </div>
+      </div>
+
+      <!-- Interior del pasaporte -->
+      <div class="passport-interior" id="passport-interior">
+        <!-- Página izquierda: datos del viajero -->
+        <div class="passport-page page-left">
+          <div class="page-header">DATOS DEL VIAJERO</div>
+          <div class="traveler-avatar" id="traveler-avatar">🧭</div>
+          <div class="traveler-name" id="traveler-name">—</div>
+          <div class="traveler-meta">
+            <div class="meta-row"><span class="meta-label">Tipo</span><span class="meta-val">Explorador</span></div>
+            <div class="meta-row"><span class="meta-label">Edición</span><span class="meta-val">2025</span></div>
+            <div class="meta-row"><span class="meta-label">Sellos</span><span class="meta-val" id="stamp-count">0 / 12</span></div>
+          </div>
+          <div class="page-serial" id="page-serial">PT-000000</div>
+        </div>
+
+        <!-- Página derecha: sellos -->
+        <div class="passport-page page-right">
+          <div class="page-header">SELLOS DE VISITA</div>
+          <div class="stamps-grid" id="stamps-grid">
+            <!-- 12 slots generados por JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-label">Progreso del viaje</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-pct" id="progress-pct">0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: ESCÁNER QR ── -->
+<div id="screen-scanner" class="screen">
+  <div class="scanner-wrap">
+    <div class="scanner-header">
+      <button id="btn-close-scanner" class="back-btn">← Volver</button>
+      <h2>Escanear Sello</h2>
+    </div>
+    <div class="scanner-viewport">
+      <div id="qr-reader"></div>
+      <div class="scanner-frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+      <p class="scanner-hint">Apunta la cámara al código QR del lugar</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: SELLO OBTENIDO ── -->
+<div id="modal-stamp" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-card">
+    <div class="stamp-anim" id="stamp-anim">
+      <div class="stamp-outer">
+        <div class="stamp-inner" id="modal-stamp-inner">
+          <div class="stamp-emoji" id="modal-emoji">🏛️</div>
+          <div class="stamp-name" id="modal-place-name">Lugar</div>
+          <div class="stamp-date" id="modal-date">—</div>
+        </div>
+      </div>
+    </div>
+    <h3 id="modal-title">¡Sello obtenido!</h3>
+    <p id="modal-desc">Has visitado este lugar.</p>
+    <button id="btn-modal-close" class="btn-primary">Ver mi pasaporte</button>
+  </div>
+</div>
+
+<!-- ── MODAL: YA TIENES ESTE SELLO ── -->
+<div id="modal-duplicate" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-card">
+    <div class="dup-icon">🔁</div>
+    <h3>Ya tienes este sello</h3>
+    <p>Ya visitaste este lugar anteriormente. ¡Sigue explorando!</p>
+    <button id="btn-dup-close" class="btn-primary">Continuar</button>
+  </div>
+</div>
+
+<!-- QR Scanner library -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="js/stamps.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

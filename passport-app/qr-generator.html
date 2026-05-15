@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de QR — Pasaporte Turístico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --cover-green: #1c3d2a;
+      --gold: #c9a84c;
+      --cream: #f7f0e0;
+      --ink: #1a1209;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: #0e0d0b;
+      color: var(--cream);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: rgba(247,240,224,0.5);
+      font-size: 14px;
+      margin-bottom: 2rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .stamp-qr-card {
+      background: var(--cream);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-emoji { font-size: 32px; }
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      color: #1c3d2a;
+    }
+    .card-id {
+      font-size: 11px;
+      color: #8b7355;
+      font-family: 'Courier New', monospace;
+    }
+    .qr-box { background: white; padding: 8px; border-radius: 4px; }
+    .print-btn {
+      display: block;
+      margin: 2rem auto 0;
+      padding: 12px 32px;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 4px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @media print {
+      body { background: white; color: black; }
+      .print-btn { display: none; }
+      h1, .subtitle { color: black; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Códigos QR del Pasaporte</h1>
+  <p class="subtitle">Imprime y coloca en cada punto de visita</p>
+  <div class="grid" id="qr-grid"></div>
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimir todos los QR</button>
+
+  <script src="js/stamps.js"></script>
+  <script>
+    const grid = document.getElementById('qr-grid');
+    STAMPS_DATA.forEach(stamp => {
+      const card = document.createElement('div');
+      card.className = 'stamp-qr-card';
+      card.innerHTML = `
+        <div class="card-emoji">${stamp.emoji}</div>
+        <div class="card-name">${stamp.name}</div>
+        <div class="card-id">ID: ${stamp.id}</div>
+        <div class="qr-box" id="qr-${stamp.id}"></div>
+      `;
+      grid.appendChild(card);
+      // Generar QR con el ID del sello
+      new QRCode(document.getElementById(`qr-${stamp.id}`), {
+        text: stamp.id,
+        width: 140,
+        height: 140,
+        colorDark: "#1a1209",
+        colorLight: "#ffffff",
+      });
+    });
+  </script>
+</body>
+</html>

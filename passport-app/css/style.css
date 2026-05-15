@@ -1,0 +1,736 @@
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #1a1209;
+  --gold: #b8860b;
+  --gold-light: #d4a820;
+  --cream: #f7f0e0;
+  --cream-dark: #e8d8b8;
+  --cover-green: #1c3d2a;
+  --cover-gold: #c9a84c;
+  --red-seal: #8b1a1a;
+  --page: #fdf8ef;
+  --page-line: #e8d8b8;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-fell: 'IM Fell English', Georgia, serif;
+  --font-body: 'Crimson Pro', Georgia, serif;
+  --radius: 8px;
+  --shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-body);
+  background: #0e0d0b;
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ── SCREENS ──────────────────────────────────────────────────── */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── SCREEN: REGISTRO ─────────────────────────────────────────── */
+.register-bg {
+  min-height: 100%;
+  background: linear-gradient(160deg, #1a1209 0%, #2a1f0e 50%, #1a1209 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  gap: 1rem;
+}
+
+.ornament {
+  color: var(--cover-gold);
+  font-size: 14px;
+  letter-spacing: 8px;
+  opacity: 0.6;
+}
+
+.register-card {
+  background: var(--cream);
+  border-radius: 4px;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  border: 1px solid var(--cream-dark);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.passport-emblem {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 0.5rem;
+}
+
+.register-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+  color: var(--cover-green);
+  margin-bottom: 0.25rem;
+}
+
+.register-title .italic { font-style: italic; font-weight: 400; }
+
+.register-sub {
+  text-align: center;
+  font-size: 13px;
+  color: #6b5a3e;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid var(--cream-dark);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 6px 0;
+}
+
+.form-group { margin-bottom: 1.25rem; }
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b5a3e;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus { border-color: var(--gold); }
+.form-group input.shake {
+  animation: shake 0.4s ease;
+  border-color: #c00;
+}
+
+@keyframes shake {
+  0%,100%{ transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.av {
+  aspect-ratio: 1;
+  font-size: 24px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.av:hover { border-color: var(--gold-light); background: #fffbf0; }
+.av.selected { border-color: var(--gold); background: #fffbf0; box-shadow: 0 0 0 3px rgba(184,134,11,0.15); }
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--cover-green);
+  color: var(--cover-gold);
+  border: none;
+  border-radius: 2px;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+.btn-primary:hover { background: #274d38; }
+.btn-primary:active { transform: scale(0.98); }
+
+/* ── SCREEN: PASAPORTE ────────────────────────────────────────── */
+#screen-passport {
+  background: radial-gradient(ellipse at center, #1c1408 0%, #0e0d0b 100%);
+  align-items: center;
+}
+
+.passport-wrapper {
+  width: 100%;
+  max-width: 420px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scan-btn {
+  background: var(--cover-gold);
+  color: var(--ink);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(184,134,11,0.3);
+}
+.scan-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+.scan-icon { font-size: 18px; }
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.4);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.logout-btn:hover { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.7); }
+
+/* ── LIBRO/PASAPORTE ──────────────────────────────────────────── */
+.passport-book {
+  position: relative;
+  perspective: 1200px;
+  width: 100%;
+}
+
+.passport-cover {
+  background: var(--cover-green);
+  border-radius: 6px 12px 12px 6px;
+  aspect-ratio: 0.72;
+  max-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: -4px 0 0 #0d2218, var(--shadow);
+  transition: transform 0.6s ease, opacity 0.4s ease;
+  border: 2px solid rgba(201,168,76,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.passport-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255,255,255,0.015) 10px,
+    rgba(255,255,255,0.015) 20px
+  );
+}
+
+.cover-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cover-ornament-top, .cover-ornament-bottom {
+  color: var(--cover-gold);
+  font-size: 12px;
+  letter-spacing: 4px;
+  opacity: 0.7;
+}
+
+.cover-country {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--cover-gold);
+  text-align: center;
+}
+
+.cover-globe { font-size: 56px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+
+.cover-lines { display: flex; flex-direction: column; gap: 3px; width: 80%; align-items: center; }
+.cover-line-thick { width: 100%; height: 2px; background: rgba(201,168,76,0.5); }
+.cover-line-thin  { width: 80%; height: 1px; background: rgba(201,168,76,0.3); }
+
+.cover-sub {
+  font-family: var(--font-fell);
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(201,168,76,0.6);
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.cover-tap {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+
+/* ── INTERIOR DEL PASAPORTE ───────────────────────────────────── */
+.passport-interior {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  background: var(--page);
+  border-radius: 4px 8px 8px 4px;
+  overflow: hidden;
+  min-height: 380px;
+  box-shadow: var(--shadow);
+  animation: openPages 0.5s ease forwards;
+}
+
+@keyframes openPages {
+  from { opacity: 0; transform: scaleX(0.8); transform-origin: left; }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+
+.passport-book.open .passport-cover {
+  display: none;
+}
+
+.passport-book.open .passport-interior {
+  display: grid;
+}
+
+/* Páginas */
+.passport-page {
+  padding: 1rem 0.75rem;
+  position: relative;
+}
+
+.page-left {
+  background: var(--page);
+  border-right: 2px solid var(--cream-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-right {
+  background: var(--page);
+}
+
+.page-header {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  border-bottom: 1px solid var(--cream-dark);
+  width: 100%;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  text-align: center;
+  font-family: var(--font-body);
+}
+
+.traveler-avatar {
+  font-size: 42px;
+  background: var(--cream);
+  border: 2px solid var(--cream-dark);
+  border-radius: 4px;
+  width: 64px; height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.traveler-name {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cover-green);
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.traveler-meta { width: 100%; }
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--cream-dark);
+}
+.meta-label { color: #8b7355; text-transform: uppercase; letter-spacing: 0.05em; }
+.meta-val   { color: var(--ink); font-weight: 600; font-family: var(--font-serif); }
+
+.page-serial {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #8b7355;
+  margin-top: auto;
+  letter-spacing: 0.1em;
+}
+
+/* ── GRID DE SELLOS ───────────────────────────────────────────── */
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 0 2px;
+}
+
+.stamp-slot {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stamp-slot.empty {
+  background: rgba(0,0,0,0.04);
+  border: 1px dashed var(--page-line);
+}
+
+.slot-num {
+  color: var(--cream-dark);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.5;
+}
+
+.stamp-slot.earned {
+  background: var(--stamp-bg, #f0ead8);
+  border: 1.5px solid var(--stamp-color, #7c4f1e);
+  border-radius: 4px;
+  animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes stampIn {
+  from { transform: scale(0) rotate(-15deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.stamp-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 2px;
+  width: 100%;
+}
+
+.stamp-emoji-sm { font-size: 16px; }
+
+.stamp-name-sm {
+  font-size: 7px;
+  text-align: center;
+  color: var(--stamp-color, #7c4f1e);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  font-family: var(--font-body);
+}
+
+/* ── BARRA DE PROGRESO ────────────────────────────────────────── */
+.progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+.progress-pct {
+  font-size: 12px;
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── SCREEN: ESCÁNER ──────────────────────────────────────────── */
+#screen-scanner {
+  background: #0e0d0b;
+  align-items: stretch;
+}
+
+.scanner-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.scanner-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.scanner-header h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--cream);
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.back-btn:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+.scanner-viewport {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#qr-reader {
+  width: 280px !important;
+  height: 280px !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Ocultar UI por defecto del scanner */
+#qr-reader img, #qr-reader select, #qr-reader button:not(#html5-qrcode-button-camera-permission) {
+  display: none !important;
+}
+#qr-reader video { width: 100% !important; height: 100% !important; object-fit: cover; }
+
+.scanner-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--cover-gold);
+  border-style: solid;
+}
+.corner.tl { top: 0; left: 0; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+.corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+.corner.bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+.corner.br { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+
+.scanner-hint {
+  font-family: var(--font-fell);
+  font-style: italic;
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ── MODALES ──────────────────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+.modal.hidden { display: none; }
+.modal:not(.hidden):not(.show) { opacity: 0; }
+.modal.show { opacity: 1; }
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  position: relative;
+  background: var(--cream);
+  border-radius: 20px 20px 0 0;
+  padding: 2rem 1.5rem 3rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(40px);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal.show .modal-card { transform: translateY(0); }
+
+.modal-card h3 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--cover-green);
+  text-align: center;
+}
+.modal-card p {
+  font-family: var(--font-fell);
+  font-style: italic;
+  font-size: 15px;
+  color: #6b5a3e;
+  text-align: center;
+}
+
+/* Sello animado en modal */
+.stamp-anim {
+  transform: scale(0.5) rotate(-20deg);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+}
+.stamp-anim.stamping {
+  transform: scale(1) rotate(-4deg);
+  opacity: 1;
+}
+
+.stamp-outer {
+  width: 130px;
+  height: 130px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.06);
+  padding: 6px;
+}
+
+.stamp-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--stamp-bg, #f0ead8);
+  border: 3px solid var(--stamp-color, #7c4f1e);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), 3px 3px 0 rgba(0,0,0,0.12);
+  position: relative;
+}
+
+.stamp-inner::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed var(--stamp-color, #7c4f1e);
+  border-radius: 3px;
+  opacity: 0.4;
+}
+
+.stamp-emoji { font-size: 38px; }
+
+.stamp-name {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--stamp-color, #7c4f1e);
+  text-align: center;
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+  line-height: 1.2;
+}
+
+.stamp-date {
+  font-size: 9px;
+  color: var(--stamp-color, #7c4f1e);
+  opacity: 0.6;
+  font-family: 'Courier New', monospace;
+}
+
+/* Duplicado modal */
+.dup-icon { font-size: 48px; }
+
+/* ── UTILIDADES ───────────────────────────────────────────────── */
+@media (max-height: 680px) {
+  .passport-cover { max-height: 360px; }
+  .cover-globe { font-size: 40px; }
+  .traveler-avatar { width: 52px; height: 52px; font-size: 32px; }
+}
+
+@media (min-width: 480px) {
+  .passport-wrapper { padding: 1.5rem; }
+}
