@@ -474,6 +474,7 @@ html, body {
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 2px;
+  mix-blend-mode: screen;
 }
 
 .stamp-img-lg {
@@ -481,6 +482,7 @@ html, body {
   height: 58px;
   object-fit: cover;
   border-radius: 3px;
+  mix-blend-mode: screen;
 }
 
 .stamp-name-sm {
