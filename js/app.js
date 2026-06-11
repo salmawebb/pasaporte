@@ -1,9 +1,8 @@
 // app.js — Lógica principal del Pasaporte Turístico
 
 // ── Estado global ──────────────────────────────────────────────
-let user = null;           // { name, avatar, serial, stamps: [id,...] }
+let user = null;
 let qrScanner = null;
-let passportOpen = false;
 
 // ── Utils ──────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -50,7 +49,6 @@ $('btn-register').addEventListener('click', () => {
   initPassport();
   hide('register');
   show('passport');
-  openPassportInterior();
 });
 
 // ── PANTALLA: Pasaporte ────────────────────────────────────────
@@ -93,36 +91,26 @@ function updateProgress() {
   $('progress-pct').textContent = pct + '%';
 }
 
-function openPassportInterior() {
-  passportOpen = true;
-  $('passport-book').classList.add('open');
-}
-
-function closePassportInterior() {
-  passportOpen = false;
-  $('passport-book').classList.remove('open');
-}
-
-// Tocar portada: si no hay usuario → registrar; si hay → abrir interior
-$('passport-cover').addEventListener('click', () => {
+// Tocar portada fullscreen
+$('cover-img-full').addEventListener('click', () => {
   if (!user) {
-    hide('passport');
+    hide('cover');
     show('register');
-    return;
+  } else {
+    hide('cover');
+    show('passport');
   }
-  openPassportInterior();
 });
 
-// Botón ✕: si interior abierto → cerrar (volver a portada); si portada → logout
+// Botón ✕: volver a portada
 $('btn-logout').addEventListener('click', () => {
-  if (passportOpen) {
-    closePassportInterior();
+  if (confirm('Log out? Your progress will be saved.')) {
+    user = null;
+    hide('passport');
+    show('register');
   } else {
-    if (confirm('Log out? Your progress will be saved.')) {
-      user = null;
-      hide('passport');
-      show('register');
-    }
+    hide('passport');
+    show('cover');
   }
 });
 
@@ -212,7 +200,6 @@ $('btn-modal-close').addEventListener('click', () => {
   $('stamp-anim').classList.remove('stamping');
   setTimeout(() => modal.classList.add('hidden'), 300);
   show('passport');
-  if (!passportOpen) openPassportInterior();
 });
 
 // ── MODAL: Duplicado ───────────────────────────────────────────
@@ -235,5 +222,5 @@ window.addEventListener('DOMContentLoaded', () => {
   if (user) {
     initPassport();
   }
-  show('passport');
+  show('cover');
 });

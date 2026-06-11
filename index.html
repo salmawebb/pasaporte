@@ -46,7 +46,12 @@
   </div>
 </div>
 
-<!-- ── SCREEN 2: PASAPORTE ── -->
+<!-- ── SCREEN 2: PORTADA ── -->
+<div id="screen-cover" class="screen">
+  <img src="images/cover.jpeg" id="cover-img-full" alt="Travel Passport" />
+</div>
+
+<!-- ── SCREEN 3: PASAPORTE INTERIOR ── -->
 <div id="screen-passport" class="screen">
   <div class="passport-wrapper">
 
@@ -55,15 +60,10 @@
         <span class="scan-icon">⬡</span>
         Scan QR
       </button>
-      <button id="btn-logout" class="logout-btn" title="Cerrar sesión">✕</button>
+      <button id="btn-logout" class="logout-btn" title="Close">✕</button>
     </div>
 
-    <!-- Cubierta del pasaporte -->
     <div class="passport-book" id="passport-book">
-      <div class="passport-cover" id="passport-cover">
-        <img src="images/cover.jpeg" alt="Travel Passport" class="cover-img" />
-      </div>
-
       <!-- Interior del pasaporte -->
       <div class="passport-interior" id="passport-interior">
         <!-- Página izquierda: datos del viajero -->
@@ -87,7 +87,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- end passport-book -->
 
     <div class="progress-bar-wrap">
       <div class="progress-label">Travel progress</div>
