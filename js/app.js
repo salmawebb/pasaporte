@@ -50,8 +50,7 @@ $('btn-register').addEventListener('click', () => {
   initPassport();
   hide('register');
   show('passport');
-  passportOpen = true;
-  $('passport-book').classList.add('open');
+  openPassportInterior();
 });
 
 // ── PANTALLA: Pasaporte ────────────────────────────────────────
@@ -94,6 +93,18 @@ function updateProgress() {
   $('progress-pct').textContent = pct + '%';
 }
 
+function openPassportInterior() {
+  passportOpen = true;
+  $('passport-book').classList.add('open');
+  document.querySelector('.passport-wrapper').classList.remove('cover-mode');
+}
+
+function closePassportInterior() {
+  passportOpen = false;
+  $('passport-book').classList.remove('open');
+  document.querySelector('.passport-wrapper').classList.add('cover-mode');
+}
+
 // Tocar portada: si no hay usuario → registrar; si hay → abrir interior
 $('passport-cover').addEventListener('click', () => {
   if (!user) {
@@ -101,15 +112,13 @@ $('passport-cover').addEventListener('click', () => {
     show('register');
     return;
   }
-  passportOpen = true;
-  $('passport-book').classList.add('open');
+  openPassportInterior();
 });
 
 // Botón ✕: si interior abierto → cerrar (volver a portada); si portada → logout
 $('btn-logout').addEventListener('click', () => {
   if (passportOpen) {
-    passportOpen = false;
-    $('passport-book').classList.remove('open');
+    closePassportInterior();
   } else {
     if (confirm('Log out? Your progress will be saved.')) {
       user = null;
@@ -205,11 +214,7 @@ $('btn-modal-close').addEventListener('click', () => {
   $('stamp-anim').classList.remove('stamping');
   setTimeout(() => modal.classList.add('hidden'), 300);
   show('passport');
-  // Abrir pasaporte en sellos automáticamente
-  if (!passportOpen) {
-    passportOpen = true;
-    $('passport-book').classList.add('open');
-  }
+  if (!passportOpen) openPassportInterior();
 });
 
 // ── MODAL: Duplicado ───────────────────────────────────────────
@@ -232,5 +237,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (user) {
     initPassport();
   }
-  show('passport'); // siempre mostrar portada primero
+  document.querySelector('.passport-wrapper').classList.add('cover-mode');
+  show('passport');
 });
