@@ -74,7 +74,7 @@ function buildStampGrid() {
       slot.style.setProperty('--stamp-color', stamp.color);
       slot.innerHTML = `
         <div class="stamp-seal">
-          <div class="stamp-emoji-sm">${stamp.emoji}</div>
+          <img class="stamp-img-sm" src="${stamp.image}" alt="${stamp.name}" />
           <div class="stamp-name-sm">${stamp.name}</div>
         </div>`;
     } else {
@@ -86,8 +86,8 @@ function buildStampGrid() {
 
 function updateProgress() {
   const count = user.stamps.length;
-  const pct = Math.round((count / 12) * 100);
-  $('stamp-count').textContent = `${count} / 12`;
+  const pct = Math.round((count / STAMPS_DATA.length) * 100);
+  $('stamp-count').textContent = `${count} / ${STAMPS_DATA.length}`;
   $('progress-fill').style.width = pct + '%';
   $('progress-pct').textContent = pct + '%';
 }
@@ -176,7 +176,7 @@ function onQRSuccess(text) {
 
 // ── MODAL: Sello obtenido ──────────────────────────────────────
 function showStampModal(stamp) {
-  $('modal-emoji').textContent = stamp.emoji;
+  $('modal-emoji').innerHTML = `<img class="stamp-img-lg" src="${stamp.image}" alt="${stamp.name}" />`;
   $('modal-place-name').textContent = stamp.name;
   $('modal-date').textContent = today();
   $('modal-title').textContent = '¡Sello obtenido!';

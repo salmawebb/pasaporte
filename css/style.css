@@ -415,6 +415,11 @@ html, body {
   padding: 0 2px;
 }
 
+/* Centra el último sello cuando queda solo en su fila */
+.stamp-slot:last-child:nth-child(3n+1) {
+  grid-column: 2;
+}
+
 .stamp-slot {
   aspect-ratio: 1;
   border-radius: 4px;
@@ -462,6 +467,20 @@ html, body {
 }
 
 .stamp-emoji-sm { font-size: 16px; }
+
+.stamp-img-sm {
+  width: 80%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.stamp-img-lg {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 3px;
+}
 
 .stamp-name-sm {
   font-size: 7px;
