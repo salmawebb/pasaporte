@@ -28,7 +28,7 @@ function today() {
 }
 
 // ── PANTALLA: Registro ─────────────────────────────────────────
-let selectedAvatar = '🧭';
+let selectedAvatar = '😊';
 
 document.querySelectorAll('.av').forEach(btn => {
   btn.addEventListener('click', () => {
