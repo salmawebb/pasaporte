@@ -3,13 +3,14 @@
 
 :root {
   --ink: #1a1209;
-  --gold: #b8860b;
-  --gold-light: #d4a820;
+  --gold: #e6bc00;
+  --gold-light: #ffd100;
   --cream: #f7f0e0;
   --cream-dark: #e8d8b8;
-  --cover-green: #1c3d2a;
-  --cover-gold: #c9a84c;
-  --red-seal: #8b1a1a;
+  --cover-green: #003087;
+  --cover-gold: #ffd100;
+  --carrier-green: #3a7d3a;
+  --red-seal: #3a7d3a;
   --page: #fdf8ef;
   --page-line: #e8d8b8;
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -22,7 +23,7 @@
 html, body {
   height: 100%;
   font-family: var(--font-body);
-  background: #0e0d0b;
+  background: #07101f;
   color: var(--ink);
   overflow: hidden;
 }
@@ -40,7 +41,7 @@ html, body {
 /* ── SCREEN: REGISTRO ─────────────────────────────────────────── */
 .register-bg {
   min-height: 100%;
-  background: linear-gradient(160deg, #1a1209 0%, #2a1f0e 50%, #1a1209 100%);
+  background: linear-gradient(160deg, #07101f 0%, #0d1e3d 50%, #07101f 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -166,12 +167,12 @@ html, body {
   transition: all 0.2s;
   margin-top: 0.5rem;
 }
-.btn-primary:hover { background: #274d38; }
+.btn-primary:hover { background: #1a3a6b; }
 .btn-primary:active { transform: scale(0.98); }
 
 /* ── SCREEN: PASAPORTE ────────────────────────────────────────── */
 #screen-passport {
-  background: radial-gradient(ellipse at center, #1c1408 0%, #0e0d0b 100%);
+  background: radial-gradient(ellipse at center, #0d1e3d 0%, #07101f 100%);
   align-items: center;
 }
 
@@ -191,8 +192,8 @@ html, body {
 }
 
 .scan-btn {
-  background: var(--cover-gold);
-  color: var(--ink);
+  background: var(--carrier-green);
+  color: #fff;
   border: none;
   border-radius: 20px;
   padding: 10px 20px;
@@ -204,9 +205,9 @@ html, body {
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(184,134,11,0.3);
+  box-shadow: 0 4px 16px rgba(58,125,58,0.35);
 }
-.scan-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+.scan-btn:hover { background: #4a9e4a; transform: translateY(-1px); }
 .scan-icon { font-size: 18px; }
 
 .logout-btn {
@@ -229,32 +230,20 @@ html, body {
 }
 
 .passport-cover {
-  background: var(--cover-green);
+  background: url('../images/cover.jpeg') center/cover no-repeat;
   border-radius: 6px 12px 12px 6px;
-  aspect-ratio: 0.72;
-  max-height: 480px;
+  aspect-ratio: 0.52;
+  max-height: 540px;
+  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   cursor: pointer;
-  box-shadow: -4px 0 0 #0d2218, var(--shadow);
+  box-shadow: -4px 0 0 #060f2a, var(--shadow);
   transition: transform 0.6s ease, opacity 0.4s ease;
-  border: 2px solid rgba(201,168,76,0.3);
+  border: 2px solid rgba(255,209,0,0.3);
   position: relative;
   overflow: hidden;
-}
-
-.passport-cover::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255,255,255,0.015) 10px,
-    rgba(255,255,255,0.015) 20px
-  );
 }
 
 .cover-inner {
@@ -300,10 +289,14 @@ html, body {
 
 .cover-tap {
   font-size: 11px;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.6);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   animation: pulse 2s ease-in-out infinite;
+  margin-bottom: 1rem;
+  background: rgba(0,0,0,0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
@@ -534,7 +527,7 @@ html, body {
 
 /* ── SCREEN: ESCÁNER ──────────────────────────────────────────── */
 #screen-scanner {
-  background: #0e0d0b;
+  background: #07101f;
   align-items: stretch;
 }
 
