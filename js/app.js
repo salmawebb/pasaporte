@@ -24,7 +24,7 @@ function genSerial() {
 }
 
 function today() {
-  return new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+  return new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 // ── PANTALLA: Registro ─────────────────────────────────────────
@@ -104,7 +104,7 @@ $('passport-cover').addEventListener('click', () => {
 });
 
 $('btn-logout').addEventListener('click', () => {
-  if (confirm('¿Cerrar sesión? Tu progreso se guardará.')) {
+  if (confirm('Log out? Your progress will be saved.')) {
     hide('passport');
     show('register');
   }
@@ -133,7 +133,7 @@ function startScanner() {
     () => {}
   ).catch(err => {
     console.error("Error de cámara:", err);
-    alert("No se pudo acceder a la cámara. Verifica los permisos.");
+    alert("Could not access the camera. Please check your permissions.");
     stopScanner();
     hide('scanner');
     show('passport');
@@ -156,7 +156,7 @@ function onQRSuccess(text) {
   // Buscar el sello por ID en el QR
   const stamp = STAMPS_DATA.find(s => s.id === text.trim());
   if (!stamp) {
-    alert(`Código QR no reconocido:\n"${text}"\n\nAsegúrate de escanear un QR válido del pasaporte.`);
+    alert(`QR code not recognized:\n"${text}"\n\nMake sure to scan a valid passport QR code.`);
     show('passport');
     return;
   }
@@ -179,8 +179,8 @@ function showStampModal(stamp) {
   $('modal-emoji').innerHTML = `<img class="stamp-img-lg" src="${stamp.image}" alt="${stamp.name}" />`;
   $('modal-place-name').textContent = stamp.name;
   $('modal-date').textContent = today();
-  $('modal-title').textContent = '¡Sello obtenido!';
-  $('modal-desc').textContent = stamp.description;
+  $('modal-title').textContent = 'Stamp collected!';
+  $('modal-desc').textContent = `You visited ${stamp.name}.`;
   $('modal-stamp-inner').style.setProperty('--stamp-bg', stamp.bg);
   $('modal-stamp-inner').style.setProperty('--stamp-color', stamp.color);
 

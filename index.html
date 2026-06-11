@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pasaporte Turístico</title>
+  <title>Tourist Passport</title>
   <meta name="theme-color" content="#1a1209" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Pasaporte" />
+  <meta name="apple-mobile-web-app-title" content="Passport" />
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -21,14 +21,14 @@
     <div class="ornament top-ornament">✦ ✦ ✦</div>
     <div class="register-card">
       <div class="passport-emblem">🌍</div>
-      <h1 class="register-title">Pasaporte<br/><span class="italic">Turístico</span></h1>
-      <p class="register-sub">Registra tu viaje · Colecciona recuerdos</p>
+      <h1 class="register-title">Tourist<br/><span class="italic">Passport</span></h1>
+      <p class="register-sub">Register your trip · Collect memories</p>
       <div class="form-group">
-        <label>Tu nombre completo</label>
-        <input type="text" id="input-name" placeholder="Ej. María González" maxlength="40" />
+        <label>Your full name</label>
+        <input type="text" id="input-name" placeholder="E.g. Jane Smith" maxlength="40" />
       </div>
       <div class="form-group">
-        <label>Elige tu avatar</label>
+        <label>Choose your avatar</label>
         <div class="avatar-grid" id="avatar-grid">
           <button class="av selected" data-av="🧭">🧭</button>
           <button class="av" data-av="🎒">🎒</button>
@@ -40,7 +40,7 @@
           <button class="av" data-av="🌊">🌊</button>
         </div>
       </div>
-      <button id="btn-register" class="btn-primary">Obtener mi Pasaporte</button>
+      <button id="btn-register" class="btn-primary">Get my Passport</button>
     </div>
     <div class="ornament bottom-ornament">— — —</div>
   </div>
@@ -53,7 +53,7 @@
     <div class="top-bar">
       <button id="btn-scan" class="scan-btn">
         <span class="scan-icon">⬡</span>
-        Escanear QR
+        Scan QR
       </button>
       <button id="btn-logout" class="logout-btn" title="Cerrar sesión">✕</button>
     </div>
@@ -63,15 +63,15 @@
       <div class="passport-cover" id="passport-cover">
         <div class="cover-inner">
           <div class="cover-ornament-top">❧ ❧ ❧</div>
-          <div class="cover-country">PASAPORTE TURÍSTICO</div>
+          <div class="cover-country">TOURIST PASSPORT</div>
           <div class="cover-globe">🌍</div>
           <div class="cover-lines">
             <div class="cover-line-thick"></div>
             <div class="cover-line-thin"></div>
           </div>
-          <p class="cover-sub">Departamento de Viajes y Exploración</p>
+          <p class="cover-sub">Department of Travel and Exploration</p>
           <div class="cover-ornament-bottom">· · · · · · · · · ·</div>
-          <p class="cover-tap">toca para abrir</p>
+          <p class="cover-tap">tap to open</p>
         </div>
       </div>
 
@@ -79,20 +79,20 @@
       <div class="passport-interior" id="passport-interior">
         <!-- Página izquierda: datos del viajero -->
         <div class="passport-page page-left">
-          <div class="page-header">DATOS DEL VIAJERO</div>
+          <div class="page-header">TRAVELER INFO</div>
           <div class="traveler-avatar" id="traveler-avatar">🧭</div>
           <div class="traveler-name" id="traveler-name">—</div>
           <div class="traveler-meta">
-            <div class="meta-row"><span class="meta-label">Tipo</span><span class="meta-val">Explorador</span></div>
-            <div class="meta-row"><span class="meta-label">Edición</span><span class="meta-val">2025</span></div>
-            <div class="meta-row"><span class="meta-label">Sellos</span><span class="meta-val" id="stamp-count">0 / 7</span></div>
+            <div class="meta-row"><span class="meta-label">Type</span><span class="meta-val">Explorer</span></div>
+            <div class="meta-row"><span class="meta-label">Edition</span><span class="meta-val">2025</span></div>
+            <div class="meta-row"><span class="meta-label">Stamps</span><span class="meta-val" id="stamp-count">0 / 7</span></div>
           </div>
           <div class="page-serial" id="page-serial">PT-000000</div>
         </div>
 
         <!-- Página derecha: sellos -->
         <div class="passport-page page-right">
-          <div class="page-header">SELLOS DE VISITA</div>
+          <div class="page-header">VISIT STAMPS</div>
           <div class="stamps-grid" id="stamps-grid">
             <!-- 12 slots generados por JS -->
           </div>
@@ -101,7 +101,7 @@
     </div>
 
     <div class="progress-bar-wrap">
-      <div class="progress-label">Progreso del viaje</div>
+      <div class="progress-label">Travel progress</div>
       <div class="progress-track">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
@@ -114,8 +114,8 @@
 <div id="screen-scanner" class="screen">
   <div class="scanner-wrap">
     <div class="scanner-header">
-      <button id="btn-close-scanner" class="back-btn">← Volver</button>
-      <h2>Escanear Sello</h2>
+      <button id="btn-close-scanner" class="back-btn">← Back</button>
+      <h2>Scan Stamp</h2>
     </div>
     <div class="scanner-viewport">
       <div id="qr-reader"></div>
@@ -125,7 +125,7 @@
         <span class="corner bl"></span>
         <span class="corner br"></span>
       </div>
-      <p class="scanner-hint">Apunta la cámara al código QR del lugar</p>
+      <p class="scanner-hint">Point the camera at the QR code</p>
     </div>
   </div>
 </div>
@@ -138,14 +138,14 @@
       <div class="stamp-outer">
         <div class="stamp-inner" id="modal-stamp-inner">
           <div class="stamp-emoji" id="modal-emoji">🏛️</div>
-          <div class="stamp-name" id="modal-place-name">Lugar</div>
+          <div class="stamp-name" id="modal-place-name">Place</div>
           <div class="stamp-date" id="modal-date">—</div>
         </div>
       </div>
     </div>
-    <h3 id="modal-title">¡Sello obtenido!</h3>
-    <p id="modal-desc">Has visitado este lugar.</p>
-    <button id="btn-modal-close" class="btn-primary">Ver mi pasaporte</button>
+    <h3 id="modal-title">Stamp collected!</h3>
+    <p id="modal-desc">You visited this place.</p>
+    <button id="btn-modal-close" class="btn-primary">View my passport</button>
   </div>
 </div>
 
@@ -154,9 +154,9 @@
   <div class="modal-backdrop"></div>
   <div class="modal-card">
     <div class="dup-icon">🔁</div>
-    <h3>Ya tienes este sello</h3>
-    <p>Ya visitaste este lugar anteriormente. ¡Sigue explorando!</p>
-    <button id="btn-dup-close" class="btn-primary">Continuar</button>
+    <h3>You already have this stamp</h3>
+    <p>You already visited this place. Keep exploring!</p>
+    <button id="btn-dup-close" class="btn-primary">Continue</button>
   </div>
 </div>
 

@@ -1,7 +1,7 @@
 {
-  "name": "Pasaporte Turístico",
-  "short_name": "Pasaporte",
-  "description": "Colecciona sellos de tus lugares visitados",
+  "name": "Tourist Passport",
+  "short_name": "Passport",
+  "description": "Collect stamps from your visited places",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0e0d0b",
