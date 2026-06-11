@@ -50,6 +50,8 @@ $('btn-register').addEventListener('click', () => {
   initPassport();
   hide('register');
   show('passport');
+  passportOpen = true;
+  $('passport-book').classList.add('open');
 });
 
 // ── PANTALLA: Pasaporte ────────────────────────────────────────
@@ -92,21 +94,28 @@ function updateProgress() {
   $('progress-pct').textContent = pct + '%';
 }
 
-// Abrir/cerrar pasaporte al tocar cubierta
+// Tocar portada: si no hay usuario → registrar; si hay → abrir interior
 $('passport-cover').addEventListener('click', () => {
-  passportOpen = !passportOpen;
-  const book = $('passport-book');
-  if (passportOpen) {
-    book.classList.add('open');
-  } else {
-    book.classList.remove('open');
-  }
-});
-
-$('btn-logout').addEventListener('click', () => {
-  if (confirm('Log out? Your progress will be saved.')) {
+  if (!user) {
     hide('passport');
     show('register');
+    return;
+  }
+  passportOpen = true;
+  $('passport-book').classList.add('open');
+});
+
+// Botón ✕: si interior abierto → cerrar (volver a portada); si portada → logout
+$('btn-logout').addEventListener('click', () => {
+  if (passportOpen) {
+    passportOpen = false;
+    $('passport-book').classList.remove('open');
+  } else {
+    if (confirm('Log out? Your progress will be saved.')) {
+      user = null;
+      hide('passport');
+      show('register');
+    }
   }
 });
 
@@ -222,9 +231,6 @@ window.addEventListener('DOMContentLoaded', () => {
   user = loadUser();
   if (user) {
     initPassport();
-    hide('register');
-    show('passport');
-  } else {
-    show('register');
   }
+  show('passport'); // siempre mostrar portada primero
 });
