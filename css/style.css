@@ -176,21 +176,6 @@ html, body {
   align-items: center;
 }
 
-/* Modo portada: ocultar controles y llenar pantalla */
-.passport-wrapper.cover-mode {
-  padding: 0;
-  gap: 0;
-  max-width: 100%;
-  height: 100dvh;
-}
-.passport-wrapper.cover-mode .top-bar { display: none; }
-.passport-wrapper.cover-mode .progress-bar-wrap { display: none; }
-.passport-wrapper.cover-mode .passport-cover {
-  height: 100dvh;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-}
 
 .passport-wrapper {
   width: 100%;

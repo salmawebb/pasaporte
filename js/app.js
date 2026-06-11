@@ -96,13 +96,11 @@ function updateProgress() {
 function openPassportInterior() {
   passportOpen = true;
   $('passport-book').classList.add('open');
-  document.querySelector('.passport-wrapper').classList.remove('cover-mode');
 }
 
 function closePassportInterior() {
   passportOpen = false;
   $('passport-book').classList.remove('open');
-  document.querySelector('.passport-wrapper').classList.add('cover-mode');
 }
 
 // Tocar portada: si no hay usuario → registrar; si hay → abrir interior
@@ -237,6 +235,5 @@ window.addEventListener('DOMContentLoaded', () => {
   if (user) {
     initPassport();
   }
-  document.querySelector('.passport-wrapper').classList.add('cover-mode');
   show('passport');
 });
