@@ -22,25 +22,36 @@
     <div class="register-card">
       <div class="passport-emblem">🌍</div>
       <h1 class="register-title">Tourist<br/><span class="italic">Passport</span></h1>
-      <p class="register-sub">Register your trip · Collect memories</p>
+      <p class="register-sub" id="register-sub">Register your trip · Collect memories</p>
       <div class="form-group">
-        <label>Your full name</label>
-        <input type="text" id="input-name" placeholder="E.g. Jane Smith" maxlength="40" />
+        <label>Email</label>
+        <input type="email" id="input-email" placeholder="your@email.com" />
       </div>
       <div class="form-group">
-        <label>Choose your avatar</label>
-        <div class="avatar-grid" id="avatar-grid">
-          <button class="av selected" data-av="😊">😊</button>
-          <button class="av" data-av="😎">😎</button>
-          <button class="av" data-av="🤩">🤩</button>
-          <button class="av" data-av="🥳">🥳</button>
-          <button class="av" data-av="😄">😄</button>
-          <button class="av" data-av="🤠">🤠</button>
-          <button class="av" data-av="😍">😍</button>
-          <button class="av" data-av="🫡">🫡</button>
+        <label>Password</label>
+        <input type="password" id="input-password" placeholder="••••••••" minlength="6" />
+      </div>
+      <div id="register-only-fields">
+        <div class="form-group">
+          <label>Your full name</label>
+          <input type="text" id="input-name" placeholder="E.g. Jane Smith" maxlength="40" />
+        </div>
+        <div class="form-group">
+          <label>Choose your avatar</label>
+          <div class="avatar-grid" id="avatar-grid">
+            <button class="av selected" data-av="😊">😊</button>
+            <button class="av" data-av="😎">😎</button>
+            <button class="av" data-av="🤩">🤩</button>
+            <button class="av" data-av="🥳">🥳</button>
+            <button class="av" data-av="😄">😄</button>
+            <button class="av" data-av="🤠">🤠</button>
+            <button class="av" data-av="😍">😍</button>
+            <button class="av" data-av="🫡">🫡</button>
+          </div>
         </div>
       </div>
       <button id="btn-register" class="btn-primary">Get my Passport</button>
+      <p class="auth-toggle">Already have a passport? <a href="#" id="btn-toggle-auth">Sign in</a></p>
     </div>
     <div class="ornament bottom-ornament">— — —</div>
   </div>
@@ -149,6 +160,8 @@
   </div>
 </div>
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- QR Scanner library -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="js/stamps.js"></script>

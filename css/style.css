@@ -152,6 +152,18 @@ html, body {
 .av:hover { border-color: var(--gold-light); background: #fffbf0; }
 .av.selected { border-color: var(--gold); background: #fffbf0; box-shadow: 0 0 0 3px rgba(184,134,11,0.15); }
 
+.auth-toggle {
+  text-align: center;
+  font-size: 13px;
+  color: #6b5a3e;
+  margin-top: 0.75rem;
+}
+.auth-toggle a {
+  color: var(--cover-green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
 .btn-primary {
   width: 100%;
   padding: 12px;
