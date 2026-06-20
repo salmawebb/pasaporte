@@ -340,10 +340,9 @@
   <div class="login-card">
     <h1>✦ Admin</h1>
     <p>Travel Passport Dashboard</p>
-    <input type="email" id="admin-email" placeholder="Email" />
-    <input type="password" id="admin-password" placeholder="Password" />
-    <button class="btn-login" id="btn-admin-login">Sign In</button>
-    <p id="login-error">Access denied. Admin only.</p>
+    <input type="password" id="admin-passcode" placeholder="Enter access key" />
+    <button class="btn-login" id="btn-admin-login">Enter</button>
+    <p id="login-error">Incorrect access key.</p>
   </div>
 </div>
 
@@ -385,7 +384,7 @@
 </div>
 
 <script>
-const ADMIN_EMAIL = 'salmawebbg@gmail.com';
+const SECRET = 'lasvacasbailando090';
 const sb = supabase.createClient(
   'https://stlewgxxxglzauaesnhl.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0bGV3Z3h4eGdsemF1YWVzbmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjI1OTIsImV4cCI6MjA5NzQ5ODU5Mn0.enUY9BJzKBFh_NPXjMcNsVKc_9-Wtua1-AsdZD-eqAo'
@@ -397,29 +396,27 @@ const TOTAL = STAMPS_DATA.length;
 
 // ── Auth ──
 document.getElementById('btn-admin-login').addEventListener('click', async () => {
-  const email = document.getElementById('admin-email').value.trim();
-  const password = document.getElementById('admin-password').value.trim();
+  const passcode = document.getElementById('admin-passcode').value.trim();
   const btn = document.getElementById('btn-admin-login');
-  btn.textContent = '...';
-  btn.disabled = true;
 
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-  if (error || data.user.email !== ADMIN_EMAIL) {
-    await sb.auth.signOut();
+  if (passcode !== SECRET) {
     document.getElementById('login-error').style.display = 'block';
-    btn.textContent = 'Sign In';
-    btn.disabled = false;
     return;
   }
 
+  sessionStorage.setItem('admin_key', passcode);
   showDashboard();
 });
 
-document.getElementById('btn-admin-logout').addEventListener('click', async () => {
-  await sb.auth.signOut();
+document.getElementById('admin-passcode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-admin-login').click();
+});
+
+document.getElementById('btn-admin-logout').addEventListener('click', () => {
+  sessionStorage.removeItem('admin_key');
   document.getElementById('dashboard-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-passcode').value = '';
 });
 
 // ── Dashboard ──
@@ -430,7 +427,7 @@ async function showDashboard() {
 }
 
 async function loadData() {
-  const { data, error } = await sb.rpc('get_all_user_stamps');
+  const { data, error } = await sb.rpc('get_all_user_stamps', { secret: SECRET });
 
   if (error) {
     document.getElementById('users-grid').innerHTML = `<div class="loading">Error loading data: ${error.message}</div>`;
@@ -492,9 +489,8 @@ async function loadData() {
 }
 
 // ── Init ──
-window.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session && session.user.email === ADMIN_EMAIL) {
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('admin_key') === SECRET) {
     showDashboard();
   }
 });
