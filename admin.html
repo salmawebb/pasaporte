@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Travel Passport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/stamps.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #003087;
+      --navy-dark: #001f5b;
+      --navy-light: #1a4a9e;
+      --yellow: #ffd100;
+      --green: #3a7d3a;
+      --white: #ffffff;
+      --cream: #f7f0e0;
+      --text-muted: rgba(255,255,255,0.55);
+    }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: #001a4a;
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background: var(--navy);
+      border: 1px solid rgba(255,209,0,0.2);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .login-card h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--yellow);
+      margin-bottom: 0.25rem;
+    }
+
+    .login-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      font-size: 15px;
+      font-family: 'Crimson Pro', serif;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .login-card input:focus { border-color: var(--yellow); }
+    .login-card input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--yellow);
+      color: var(--navy-dark);
+      border: none;
+      border-radius: 6px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-login:hover { background: #ffe033; }
+
+    #login-error {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    /* ── DASHBOARD ── */
+    #dashboard-screen { display: none; }
+
+    .dash-header {
+      background: var(--navy);
+      border-bottom: 2px solid rgba(255,209,0,0.2);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .dash-header-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--yellow);
+    }
+
+    .dash-header-left p {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .btn-logout-admin {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.5);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-logout-admin:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+    /* ── STATS ── */
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      padding: 1.5rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: var(--navy);
+      border: 1px solid rgba(255,209,0,0.15);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--yellow);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* ── USER GRID ── */
+    .users-section {
+      padding: 0 2rem 2rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .user-card {
+      background: var(--navy);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .user-card:hover { border-color: rgba(255,209,0,0.3); }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+      font-size: 32px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; min-width: 0; }
+
+    .user-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-serial {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(255,209,0,0.5);
+    }
+
+    .stamp-count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .stamp-count-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stamp-count-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--yellow);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), #ffe033);
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    .stamps-earned {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .stamp-badge {
+      background: rgba(255,209,0,0.12);
+      border: 1px solid rgba(255,209,0,0.25);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: var(--yellow);
+      letter-spacing: 0.03em;
+    }
+
+    .stamp-badge.missing {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.2);
+    }
+
+    .last-stamp {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .dash-header { padding: 1rem; }
+      .stats-bar { padding: 1rem; }
+      .users-section { padding: 0 1rem 2rem; }
+      .users-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>✦ Admin</h1>
+    <p>Travel Passport Dashboard</p>
+    <input type="email" id="admin-email" placeholder="Email" />
+    <input type="password" id="admin-password" placeholder="Password" />
+    <button class="btn-login" id="btn-admin-login">Sign In</button>
+    <p id="login-error">Access denied. Admin only.</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen">
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1>✦ Passport Dashboard</h1>
+      <p>Spirit Week · Global People Services</p>
+    </div>
+    <button class="btn-logout-admin" id="btn-admin-logout">Sign out</button>
+  </div>
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card">
+      <div class="stat-value" id="stat-users">—</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-stamps">—</div>
+      <div class="stat-label">Stamps Collected</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-complete">—</div>
+      <div class="stat-label">Completed (7/7)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-avg">—</div>
+      <div class="stat-label">Avg per User</div>
+    </div>
+  </div>
+
+  <div class="users-section">
+    <div class="section-title">Travelers</div>
+    <div class="users-grid" id="users-grid">
+      <div class="loading">Loading travelers...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_EMAIL = 'salmawebbg@gmail.com';
+const sb = supabase.createClient(
+  'https://stlewgxxxglzauaesnhl.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0bGV3Z3h4eGdsemF1YWVzbmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjI1OTIsImV4cCI6MjA5NzQ5ODU5Mn0.enUY9BJzKBFh_NPXjMcNsVKc_9-Wtua1-AsdZD-eqAo'
+);
+
+const STAMP_NAMES = {};
+STAMPS_DATA.forEach(s => { STAMP_NAMES[s.id] = s.name; });
+const TOTAL = STAMPS_DATA.length;
+
+// ── Auth ──
+document.getElementById('btn-admin-login').addEventListener('click', async () => {
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-password').value.trim();
+  const btn = document.getElementById('btn-admin-login');
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error || data.user.email !== ADMIN_EMAIL) {
+    await sb.auth.signOut();
+    document.getElementById('login-error').style.display = 'block';
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+    return;
+  }
+
+  showDashboard();
+});
+
+document.getElementById('btn-admin-logout').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  document.getElementById('dashboard-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+});
+
+// ── Dashboard ──
+async function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-screen').style.display = 'block';
+  await loadData();
+}
+
+async function loadData() {
+  const { data, error } = await sb.rpc('get_all_user_stamps');
+
+  if (error) {
+    document.getElementById('users-grid').innerHTML = `<div class="loading">Error loading data: ${error.message}</div>`;
+    return;
+  }
+
+  // Stats
+  const totalUsers = data.length;
+  const totalStamps = data.reduce((sum, u) => sum + Number(u.stamp_count), 0);
+  const completed = data.filter(u => Number(u.stamp_count) === TOTAL).length;
+  const avg = totalUsers ? (totalStamps / totalUsers).toFixed(1) : 0;
+
+  document.getElementById('stat-users').textContent = totalUsers;
+  document.getElementById('stat-stamps').textContent = totalStamps;
+  document.getElementById('stat-complete').textContent = completed;
+  document.getElementById('stat-avg').textContent = avg;
+
+  // User cards
+  const grid = document.getElementById('users-grid');
+  if (!data.length) {
+    grid.innerHTML = '<div class="loading">No travelers yet.</div>';
+    return;
+  }
+
+  grid.innerHTML = data.map(u => {
+    const count = Number(u.stamp_count);
+    const pct = Math.round((count / TOTAL) * 100);
+    const earned = u.stamps || [];
+    const lastDate = u.last_stamp
+      ? new Date(u.last_stamp).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+      : null;
+
+    const badgesHTML = STAMPS_DATA.map(s => {
+      const got = earned.includes(s.id);
+      return `<span class="stamp-badge ${got ? '' : 'missing'}">${s.name}</span>`;
+    }).join('');
+
+    return `
+      <div class="user-card">
+        <div class="user-header">
+          <div class="user-avatar">${u.avatar || '😊'}</div>
+          <div class="user-info">
+            <div class="user-name">${u.name || 'Unknown'}</div>
+            <div class="user-email">${u.email}</div>
+            <div class="user-serial">${u.serial || ''}</div>
+          </div>
+        </div>
+        <div class="stamp-count-row">
+          <span class="stamp-count-label">Stamps collected</span>
+          <span class="stamp-count-num">${count} / ${TOTAL}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${pct}%"></div>
+        </div>
+        <div class="stamps-earned">${badgesHTML}</div>
+        ${lastDate ? `<div class="last-stamp">Last stamp: ${lastDate}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user.email === ADMIN_EMAIL) {
+    showDashboard();
+  }
+});
+</script>
+</body>
+</html>
