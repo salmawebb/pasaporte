@@ -91,30 +91,42 @@
   <h1>Passport QR Codes</h1>
   <p class="subtitle">Print and place at each activity station</p>
   <div class="grid" id="qr-grid"></div>
+
+  <h2 style="font-family:'Playfair Display',serif;color:#ffd100;text-align:center;margin:2.5rem 0 0.5rem;font-size:22px;">Day Activities</h2>
+  <p class="subtitle">Puzzle · Photo Frame · Meet Peer — one QR per day</p>
+  <div class="grid" id="qr-grid-daily"></div>
+
   <button class="print-btn" onclick="window.print()">🖨️ Print all QR codes</button>
 
   <script src="js/stamps.js"></script>
   <script>
-    const grid = document.getElementById('qr-grid');
-    STAMPS_DATA.forEach(stamp => {
-      const card = document.createElement('div');
-      card.className = 'stamp-qr-card';
-      card.innerHTML = `
-        <img class="card-img" src="${stamp.image}" alt="${stamp.name}" />
-        <div class="card-name">${stamp.name}</div>
-        <div class="card-id">ID: ${stamp.id}</div>
-        <div class="qr-box" id="qr-${stamp.id}"></div>
-      `;
-      grid.appendChild(card);
-      // Generar QR con el ID del sello
-      new QRCode(document.getElementById(`qr-${stamp.id}`), {
-        text: stamp.id,
-        width: 140,
-        height: 140,
-        colorDark: "#1a1209",
-        colorLight: "#ffffff",
+    function renderSection(containerId, stamps) {
+      const grid = document.getElementById(containerId);
+      stamps.forEach(stamp => {
+        const card = document.createElement('div');
+        card.className = 'stamp-qr-card';
+        card.innerHTML = `
+          <img class="card-img" src="${stamp.image}" alt="${stamp.name}" />
+          <div class="card-name">${stamp.name}</div>
+          <div class="card-id">ID: ${stamp.id}</div>
+          <div class="qr-box" id="qr-${stamp.id}"></div>
+        `;
+        grid.appendChild(card);
+        new QRCode(document.getElementById(`qr-${stamp.id}`), {
+          text: stamp.id,
+          width: 140,
+          height: 140,
+          colorDark: "#1a1209",
+          colorLight: "#ffffff",
+        });
       });
-    });
+    }
+
+    const unique  = STAMPS_DATA.filter(s => !s.id.includes('-d'));
+    const daily   = STAMPS_DATA.filter(s => s.id.includes('-d'));
+
+    renderSection('qr-grid', unique);
+    renderSection('qr-grid-daily', daily);
   </script>
 </body>
 </html>
