@@ -1,26 +1,19 @@
-// app.js — Lógica principal del Pasaporte Turístico
+// ── Supabase ───────────────────────────────────────────────────
+const sb = supabase.createClient(
+  'https://stlewgxxxglzauaesnhl.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0bGV3Z3h4eGdsemF1YWVzbmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjI1OTIsImV4cCI6MjA5NzQ5ODU5Mn0.enUY9BJzKBFh_NPXjMcNsVKc_9-Wtua1-AsdZD-eqAo'
+);
 
 // ── Estado global ──────────────────────────────────────────────
-let user = null;
+let currentUser = null;
+let userStamps = [];
 let qrScanner = null;
+let isSignInMode = false;
 
 // ── Utils ──────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const show = id => $(`screen-${id}`).classList.add('active');
 const hide = id => $(`screen-${id}`).classList.remove('active');
-
-function saveUser() {
-  localStorage.setItem('passport_user', JSON.stringify(user));
-}
-
-function loadUser() {
-  const raw = localStorage.getItem('passport_user');
-  return raw ? JSON.parse(raw) : null;
-}
-
-function genSerial() {
-  return 'PT-' + Math.floor(100000 + Math.random() * 900000);
-}
 
 function today() {
   return new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -37,25 +30,80 @@ document.querySelectorAll('.av').forEach(btn => {
   });
 });
 
-$('btn-register').addEventListener('click', () => {
-  const name = $('input-name').value.trim();
-  if (!name) {
-    $('input-name').classList.add('shake');
-    setTimeout(() => $('input-name').classList.remove('shake'), 500);
+$('btn-toggle-auth').addEventListener('click', e => {
+  e.preventDefault();
+  isSignInMode = !isSignInMode;
+  $('register-only-fields').style.display = isSignInMode ? 'none' : 'block';
+  $('btn-register').textContent = isSignInMode ? 'Sign In' : 'Get my Passport';
+  $('btn-toggle-auth').textContent = isSignInMode ? 'Create new passport' : 'Sign in';
+  $('register-sub').textContent = isSignInMode ? 'Welcome back!' : 'Register your trip · Collect memories';
+});
+
+$('btn-register').addEventListener('click', async () => {
+  const email = $('input-email').value.trim();
+  const password = $('input-password').value.trim();
+
+  if (!email || !password) {
+    alert('Please enter your email and password.');
     return;
   }
-  user = { name, avatar: selectedAvatar, serial: genSerial(), stamps: [] };
-  saveUser();
-  initPassport();
-  hide('register');
-  show('passport');
+
+  $('btn-register').disabled = true;
+  $('btn-register').textContent = '...';
+
+  if (isSignInMode) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      alert(error.message);
+      $('btn-register').disabled = false;
+      $('btn-register').textContent = 'Sign In';
+      return;
+    }
+    currentUser = data.user;
+    await loadAndShowPassport();
+  } else {
+    const name = $('input-name').value.trim();
+    if (!name) {
+      $('input-name').classList.add('shake');
+      setTimeout(() => $('input-name').classList.remove('shake'), 500);
+      $('btn-register').disabled = false;
+      $('btn-register').textContent = 'Get my Passport';
+      return;
+    }
+    const serial = 'PT-' + Math.floor(100000 + Math.random() * 900000);
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { name, avatar: selectedAvatar, serial } }
+    });
+    if (error) {
+      alert(error.message);
+      $('btn-register').disabled = false;
+      $('btn-register').textContent = 'Get my Passport';
+      return;
+    }
+    currentUser = data.user;
+    userStamps = [];
+    initPassport();
+    hide('register');
+    show('passport');
+  }
 });
 
 // ── PANTALLA: Pasaporte ────────────────────────────────────────
+async function loadAndShowPassport() {
+  const { data } = await sb.from('stamps').select('stamp_id').eq('user_id', currentUser.id);
+  userStamps = data ? data.map(s => s.stamp_id) : [];
+  initPassport();
+  hide('register');
+  show('passport');
+}
+
 function initPassport() {
-  $('traveler-avatar').textContent = user.avatar;
-  $('traveler-name').textContent = user.name;
-  $('page-serial').textContent = user.serial;
+  const meta = currentUser.user_metadata;
+  $('traveler-avatar').textContent = meta.avatar || '😊';
+  $('traveler-name').textContent = meta.name || '—';
+  $('page-serial').textContent = meta.serial || 'PT-000000';
   buildStampGrid();
   updateProgress();
 }
@@ -63,8 +111,8 @@ function initPassport() {
 function buildStampGrid() {
   const grid = $('stamps-grid');
   grid.innerHTML = '';
-  STAMPS_DATA.forEach(stamp => {
-    const earned = user.stamps.includes(stamp.id);
+  STAMPS_DATA.forEach((stamp, i) => {
+    const earned = userStamps.includes(stamp.id);
     const slot = document.createElement('div');
     slot.className = `stamp-slot ${earned ? 'earned' : 'empty'}`;
     slot.id = `slot-${stamp.id}`;
@@ -77,23 +125,23 @@ function buildStampGrid() {
           <div class="stamp-name-sm">${stamp.name}</div>
         </div>`;
     } else {
-      slot.innerHTML = `<span class="slot-num">${STAMPS_DATA.indexOf(stamp) + 1}</span>`;
+      slot.innerHTML = `<span class="slot-num">${i + 1}</span>`;
     }
     grid.appendChild(slot);
   });
 }
 
 function updateProgress() {
-  const count = user.stamps.length;
+  const count = userStamps.length;
   const pct = Math.round((count / STAMPS_DATA.length) * 100);
   $('stamp-count').textContent = `${count} / ${STAMPS_DATA.length}`;
   $('progress-fill').style.width = pct + '%';
   $('progress-pct').textContent = pct + '%';
 }
 
-// Tocar portada fullscreen
+// Portada fullscreen
 $('cover-img-full').addEventListener('click', () => {
-  if (!user) {
+  if (!currentUser) {
     hide('cover');
     show('register');
   } else {
@@ -102,12 +150,14 @@ $('cover-img-full').addEventListener('click', () => {
   }
 });
 
-// Botón ✕: volver a portada
-$('btn-logout').addEventListener('click', () => {
-  if (confirm('Log out? Your progress will be saved.')) {
-    user = null;
+// Botón ✕: logout
+$('btn-logout').addEventListener('click', async () => {
+  if (confirm('Log out? Your progress is saved to your account.')) {
+    await sb.auth.signOut();
+    currentUser = null;
+    userStamps = [];
     hide('passport');
-    show('register');
+    show('cover');
   } else {
     hide('passport');
     show('cover');
@@ -136,7 +186,7 @@ function startScanner() {
     onQRSuccess,
     () => {}
   ).catch(err => {
-    console.error("Error de cámara:", err);
+    console.error("Camera error:", err);
     alert("Could not access the camera. Please check your permissions.");
     stopScanner();
     hide('scanner');
@@ -153,11 +203,10 @@ function stopScanner() {
   }
 }
 
-function onQRSuccess(text) {
+async function onQRSuccess(text) {
   stopScanner();
   hide('scanner');
 
-  // Buscar el sello por ID en el QR
   const stamp = STAMPS_DATA.find(s => s.id === text.trim());
   if (!stamp) {
     alert(`QR code not recognized:\n"${text}"\n\nMake sure to scan a valid passport QR code.`);
@@ -165,14 +214,19 @@ function onQRSuccess(text) {
     return;
   }
 
-  if (user.stamps.includes(stamp.id)) {
+  if (userStamps.includes(stamp.id)) {
     showDuplicate();
     return;
   }
 
-  // Agregar sello
-  user.stamps.push(stamp.id);
-  saveUser();
+  const { error } = await sb.from('stamps').insert({ user_id: currentUser.id, stamp_id: stamp.id });
+  if (error) {
+    alert('Error saving stamp. Please try again.');
+    show('passport');
+    return;
+  }
+
+  userStamps.push(stamp.id);
   buildStampGrid();
   updateProgress();
   showStampModal(stamp);
@@ -216,11 +270,13 @@ $('btn-dup-close').addEventListener('click', () => {
   show('passport');
 });
 
-// ── INICIO: Verificar sesión ───────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  user = loadUser();
-  if (user) {
-    initPassport();
+// ── INICIO ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadAndShowPassport();
+  } else {
+    show('cover');
   }
-  show('cover');
 });
