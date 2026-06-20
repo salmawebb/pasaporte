@@ -201,8 +201,29 @@
       border-radius: 12px;
       padding: 1.25rem;
       transition: border-color 0.2s;
+      position: relative;
     }
     .user-card:hover { border-color: rgba(255,209,0,0.3); }
+
+    .user-card.rank-1 { border-color: rgba(255,209,0,0.5); background: #002a75; }
+    .user-card.rank-2 { border-color: rgba(192,192,192,0.4); }
+    .user-card.rank-3 { border-color: rgba(205,127,50,0.4); }
+
+    .rank-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .rank-badge.gold   { background: rgba(255,209,0,0.15); color: var(--yellow); border: 1px solid rgba(255,209,0,0.4); }
+    .rank-badge.silver { background: rgba(192,192,192,0.1); color: #c0c0c0; border: 1px solid rgba(192,192,192,0.3); }
+    .rank-badge.bronze { background: rgba(205,127,50,0.1); color: #cd7f32; border: 1px solid rgba(205,127,50,0.3); }
+    .rank-badge.normal { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.08); }
 
     .user-header {
       display: flex;
@@ -351,7 +372,7 @@
   <div class="dash-header">
     <div class="dash-header-left">
       <h1>✦ Passport Dashboard</h1>
-      <p>Spirit Week · Global People Services</p>
+      <p>Spirit Week </p>
     </div>
     <button class="btn-logout-admin" id="btn-admin-logout">Sign out</button>
   </div>
@@ -452,7 +473,12 @@ async function loadData() {
     return;
   }
 
-  grid.innerHTML = data.map(u => {
+  grid.innerHTML = data.map((u, i) => {
+    const rank = i + 1;
+    const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+    const badgeClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'normal';
+    const rankLabel = rank === 1 ? '🥇 #1' : rank === 2 ? '🥈 #2' : rank === 3 ? '🥉 #3' : `#${rank}`;
+
     const count = Number(u.stamp_count);
     const pct = Math.round((count / TOTAL) * 100);
     const earned = u.stamps || [];
@@ -466,7 +492,8 @@ async function loadData() {
     }).join('');
 
     return `
-      <div class="user-card">
+      <div class="user-card ${rankClass}">
+        <span class="rank-badge ${badgeClass}">${rankLabel}</span>
         <div class="user-header">
           <div class="user-avatar">${u.avatar || '😊'}</div>
           <div class="user-info">
